@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login Page</h1>
+<form id="login-form">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password">
+    <br>
+    <button type="button" onclick="login()">Login</button>
+</form>
+
+<script>
+    async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const params = new URLSearchParams();
+        params.append('username', username);
+        params.append('password', password);
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/authenticate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: params
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                fetchUserInfo(data.token);
+            } else {
+                alert('Login failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Login failed due to an error.');
+        }
+    }
+
+    async function fetchUserInfo(token) {
+        try {
+            const response = await fetch('http://localhost:8080/api/user/info', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+
+            if (response.ok) {
+                const userInfo = await response.json();
+                Console.log(response);
+                Console.log(userInfo);
+                displayUserInfo(userInfo);
+            } else {
+                alert('Failed to fetch user info');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to fetch user info due to an error.');
+        }
+    }
+
+    function displayUserInfo(userInfo) {
+        document.body.innerHTML = `
+                <h1>Hello, ${userInfo.username}</h1>
+            `;
+    }
+</script>
+</body>
+</html>

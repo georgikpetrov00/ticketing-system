@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<h1>Something went wrong</h1>
+<p>We are sorry, but you do not have permission to access this resource.</p>
+<p th:text="'Error details: ' + ${errorMessage}"></p>
+<p th:text="'Exception: ' + ${exception}"></p>
+</body>
+</html>
